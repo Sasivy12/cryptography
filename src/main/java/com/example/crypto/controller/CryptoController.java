@@ -1,5 +1,6 @@
 package com.example.crypto.controller;
 
+import com.example.crypto.request.CaesarRequest;
 import com.example.crypto.request.VigenereRequest;
 import com.example.crypto.service.CryptoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +14,11 @@ public class CryptoController
     @Autowired
     private CryptoService cryptoService;
 
-    @GetMapping("/caesar/{shift}/{decrypt}")
-    public ResponseEntity<String> performCaesarCipher(
-            @RequestBody String text,
-            @PathVariable int shift,
-            @PathVariable boolean decrypt)
+    @GetMapping("/caesar/{decrypt}")
+    public ResponseEntity<String> performCaesarCipher
+            (@RequestBody CaesarRequest caesarRequest, @PathVariable boolean decrypt)
     {
-        return ResponseEntity.ok(cryptoService.caesarCipher(text, shift, decrypt));
+        return ResponseEntity.ok(cryptoService.caesarCipher(caesarRequest.getText(), caesarRequest.getShift(), decrypt));
     }
 
     @GetMapping("/vigenere/{decrypt}")
