@@ -124,4 +124,30 @@ public class CryptoService
         }
         return null;
     }
+
+    public String routeCipher(String text, int rows, int cols)
+    {
+        text = text.replaceAll("[^A-Za-z]", "").toUpperCase();
+        char[][] grid = new char[rows][cols];
+        StringBuilder encrypted = new StringBuilder();
+
+        int index = 0;
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                grid[i][j] = index < text.length() ? text.charAt(index++) : 'X';
+            }
+        }
+
+        for (int j = 0; j < cols; j++)
+        {
+            for (int i = 0; i < rows; i++)
+            {
+                encrypted.append(grid[i][j]);
+            }
+        }
+
+        return encrypted.toString();
+    }
 }
