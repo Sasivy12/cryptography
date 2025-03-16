@@ -1,6 +1,7 @@
 package com.example.crypto.controller;
 
 import com.example.crypto.request.CaesarRequest;
+import com.example.crypto.request.PlayFairRequest;
 import com.example.crypto.request.VigenereRequest;
 import com.example.crypto.service.CryptoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +28,11 @@ public class CryptoController
     {
         return ResponseEntity.ok
                 (cryptoService.vigenereCipher(vigenereRequest.getText(), vigenereRequest.getKey(), decrypt));
+    }
+
+    @GetMapping("/playfair")
+    public ResponseEntity<String> performPlayFairCipher(@RequestBody PlayFairRequest playFairRequest)
+    {
+        return ResponseEntity.ok(cryptoService.playFairCipher(playFairRequest.getText(), playFairRequest.getKey()));
     }
 }
