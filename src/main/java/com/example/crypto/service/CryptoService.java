@@ -2,6 +2,9 @@ package com.example.crypto.service;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 @Service
 public class CryptoService
 {
@@ -150,4 +153,62 @@ public class CryptoService
 
         return encrypted.toString();
     }
+
+    public String columnarTranspositionCipher(String text, String key)
+    {
+        text = text.replaceAll("[^A-Za-z]", "").toUpperCase();
+        int cols = key.length();
+        int rows = (int) Math.ceil((double) text.length() / cols);
+        char[][] grid = new char[rows][cols];
+
+        int index = 0;
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                grid[i][j] = (index < text.length()) ? text.charAt(index++) : 'X';
+            }
+        }
+
+        Integer[] order = new Integer[cols];
+        for (int i = 0; i < cols; i++) order[i] = i;
+        Arrays.sort(order, Comparator.comparingInt(key::charAt));
+
+        StringBuilder encrypted = new StringBuilder();
+        for (int col : order)
+        {
+            for (int row = 0; row < rows; row++)
+            {
+                encrypted.append(grid[row][col]);
+            }
+        }
+        return encrypted.toString();
+    }
+
+
+    public String railFenceCipher(String text, int rails) {
+        text = text.replaceAll("[^A-Za-z]", "").toUpperCase();
+        char[][] rail = new char[rails][text.length()];
+
+        int row = 0, step = 1;
+
+        for (int i = 0; i < text.length(); i++) {
+            rail[row][i] = text.charAt(i);
+
+            if (row == 0) step = 1;
+            if (row == rails - 1) step = -1;
+
+            row += step;
+        }
+
+        StringBuilder encrypted = new StringBuilder();
+        for (char[] r : rail) {
+            for (char c : r) {
+                if (c != 0) encrypted.append(c);
+            }
+        }
+
+        return encrypted.toString();
+    }
+
 }

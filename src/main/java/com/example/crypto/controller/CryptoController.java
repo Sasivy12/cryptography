@@ -1,9 +1,6 @@
 package com.example.crypto.controller;
 
-import com.example.crypto.request.CaesarRequest;
-import com.example.crypto.request.PlayFairRequest;
-import com.example.crypto.request.RouteRequest;
-import com.example.crypto.request.VigenereRequest;
+import com.example.crypto.request.*;
 import com.example.crypto.service.CryptoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,5 +39,23 @@ public class CryptoController
     {
         return ResponseEntity.ok(cryptoService.routeCipher
                 (routeRequest.getText(), routeRequest.getRows(), routeRequest.getCols()));
+    }
+
+    @PostMapping("/columnartranspos")
+    public ResponseEntity<String> performColumnarTranspositionCipher
+            (@RequestBody ColumnarTranspositionRequest columnarTranspositionRequest)
+    {
+        return ResponseEntity.ok
+                (cryptoService.
+                        columnarTranspositionCipher(columnarTranspositionRequest.getText(),
+                        columnarTranspositionRequest.getKey())
+                );
+    }
+
+    @PostMapping("/railfence")
+    public ResponseEntity<String> performRailFenceCipher(@RequestBody RailFenceRequest railFenceRequest)
+    {
+        return ResponseEntity.ok
+                (cryptoService.railFenceCipher(railFenceRequest.getText(), railFenceRequest.getRails()));
     }
 }
