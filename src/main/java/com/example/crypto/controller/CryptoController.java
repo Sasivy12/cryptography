@@ -65,12 +65,30 @@ public class CryptoController
 //        return ResponseEntity.ok(cryptoService.caesarCipher(caesarRequest.getText(), caesarRequest.getShift(), decrypt));
 //    }
 
-    @PostMapping("/vigenere/{decrypt}")
-    public ResponseEntity<String> performVigenereCipher
-            (@RequestBody VigenereRequest vigenereRequest, @PathVariable boolean decrypt)
-    {
-        return ResponseEntity.ok
-                (cryptoService.vigenereCipher(vigenereRequest.getText(), vigenereRequest.getKey(), decrypt));
+//    @PostMapping("/vigenere/{decrypt}")
+//    public ResponseEntity<String> performVigenereCipher
+//            (@RequestBody VigenereRequest vigenereRequest, @PathVariable boolean decrypt)
+//    {
+//        return ResponseEntity.ok
+//                (cryptoService.vigenereCipher(vigenereRequest.getText(), vigenereRequest.getKey(), decrypt));
+//    }
+
+    @GetMapping("/vigenere")
+    public String vigenerePage() {
+        return "vigenere";
+    }
+
+    @PostMapping("/vigenere")
+    public String performVigenereCipher(@RequestParam String text,
+                                        @RequestParam String key,
+                                        @RequestParam(required = false) boolean decrypt,
+                                        Model model) {
+        String result = cryptoService.vigenereCipher(text, key, decrypt);
+        model.addAttribute("result", result);
+        model.addAttribute("text", text);
+        model.addAttribute("key", key);
+        model.addAttribute("decrypt", decrypt);
+        return "vigenere";
     }
 
     @PostMapping("/playfair")
