@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Caesar Cipher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 320px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"] {
+            width: 95%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .checkbox-container label {
+            margin: 0;
+            margin-left: 5px;
+            font-weight: normal;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        a {
+            display: block;
+            margin-top: 15px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Caesar Cipher</h1>
+    <form action="#" th:action="@{/caesar}" method="post">
+        <label for="text">Enter Text:</label>
+        <input type="text" id="text" name="text" th:value="${text}" required>
+
+        <label for="shift">Shift:</label>
+        <input type="number" id="shift" name="shift" th:value="${shift}" required>
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="decrypt" name="decrypt" th:checked="${decrypt}">
+            <label for="decrypt">Decrypt</label>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div class="result">
+        <p th:text="${result}"></p>
+    </div>
+
+    <a th:href="@{/}">Back to Home</a>
+</div>
+
+</body>
+</html>

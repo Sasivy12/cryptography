@@ -186,13 +186,15 @@ public class CryptoService
     }
 
 
-    public String railFenceCipher(String text, int rails) {
+    public String railFenceCipher(String text, int rails)
+    {
         text = text.replaceAll("[^A-Za-z]", "").toUpperCase();
         char[][] rail = new char[rails][text.length()];
 
         int row = 0, step = 1;
 
-        for (int i = 0; i < text.length(); i++) {
+        for (int i = 0; i < text.length(); i++)
+        {
             rail[row][i] = text.charAt(i);
 
             if (row == 0) step = 1;
@@ -202,8 +204,10 @@ public class CryptoService
         }
 
         StringBuilder encrypted = new StringBuilder();
-        for (char[] r : rail) {
-            for (char c : r) {
+        for (char[] r : rail)
+        {
+            for (char c : r)
+            {
                 if (c != 0) encrypted.append(c);
             }
         }

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cryptography App</title>
+</head>
+<body>
+<h1>Welcome to Cryptography App</h1>
+<h2>Select an Algorithm:</h2>
+<ul>
+    <li><a th:href="@{/caesar}">Caesar Cipher</a></li>
+    <li><a th:href="@{/vigenere}">Vigenere Cipher</a></li>
+    <li><a th:href="@{/playfair}">Playfair Cipher</a></li>
+    <li><a th:href="@{/route}">Route Cipher</a></li>
+    <li><a th:href="@{/columnar}">Columnar Transposition</a></li>
+    <li><a th:href="@{/railfence}">Rail Fence Cipher</a></li>
+</ul>
+</body>
+</html>
