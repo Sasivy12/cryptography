@@ -35,7 +35,7 @@ public class CryptoController
             case "vigenere" -> cryptoService.vigenereCipher(text, key, decrypt);
             case "playfair" -> cryptoService.playFairCipher(text, key);
             case "route" -> cryptoService.routeCipher(text, 4, 4);
-            case "columnar" -> cryptoService.columnarTranspositionCipher(text, key);
+            case "columnartranspos" -> cryptoService.columnarTranspositionCipher(text, key);
             case "railfence" -> cryptoService.railFenceCipher(text, Integer.parseInt(key));
             default -> "Invalid algorithm";
         };
@@ -133,15 +133,29 @@ public class CryptoController
         return "routecipher";
     }
 
-    @PostMapping("/columnartranspos")
-    public ResponseEntity<String> performColumnarTranspositionCipher
-            (@RequestBody ColumnarTranspositionRequest columnarTranspositionRequest)
+    @GetMapping("/columnartranspos")
+    public String columnarTransposPage(Model model)
     {
-        return ResponseEntity.ok
-                (cryptoService.
-                        columnarTranspositionCipher(columnarTranspositionRequest.getText(),
-                        columnarTranspositionRequest.getKey())
-                );
+        model.addAttribute("text", "");
+        model.addAttribute("key", "");
+        model.addAttribute("result", "");
+
+        return "columnartranspos";
+    }
+
+    @PostMapping("/columnartranspos")
+    public String performColumnarTranspositionCipher
+            (@ModelAttribute ColumnarTranspositionRequest columnarTranspositionRequest, Model model)
+    {
+        String result = cryptoService.columnarTranspositionCipher
+                (columnarTranspositionRequest.getText(),
+                 columnarTranspositionRequest.getKey());
+
+        model.addAttribute("text", columnarTranspositionRequest.getText());
+        model.addAttribute("key", columnarTranspositionRequest.getKey());
+        model.addAttribute("result", result);
+
+        return "columnartranspos";
     }
 
     @PostMapping("/railfence")
