@@ -54,6 +54,10 @@ public class CryptoController
                                       @RequestParam(required = false) boolean decrypt,
                                       Model model) {
         String result = cryptoService.caesarCipher(text, shift, decrypt);
+
+        model.addAttribute("text", text);
+        model.addAttribute("shift", shift);
+        model.addAttribute("decrypt", decrypt);
         model.addAttribute("result", result);
         return "caesar";
     }
