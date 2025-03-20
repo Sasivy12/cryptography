@@ -49,20 +49,19 @@ public class CryptoController
         return "caesar";
     }
 
-    @PostMapping("/playfair")
-    public String performPlayFairCipher(@RequestParam String text,
-                                        @RequestParam String key,
-                                        @RequestParam(required = false) boolean decrypt,
-                                        Model model)
+    @PostMapping("/caesar")
+    public String performCaesarCipher(@ModelAttribute CaesarRequest caesarRequest,
+                                      @RequestParam(required = false) boolean decrypt,
+                                      Model model)
     {
-        String result = decrypt ? cryptoService.decryptPlayFairCipher(text, key) : cryptoService.playFairCipher(text, key);
+        String result = cryptoService.caesarCipher(caesarRequest.getText(), caesarRequest.getShift(), decrypt);
 
-        model.addAttribute("text", text);
-        model.addAttribute("key", key);
+        model.addAttribute("text", caesarRequest.getText());
+        model.addAttribute("shift", caesarRequest.getShift());
         model.addAttribute("decrypt", decrypt);
         model.addAttribute("result", result);
 
-        return "playfaircipher";
+        return "caesar";
     }
 
     @GetMapping("/vigenere")
@@ -72,16 +71,17 @@ public class CryptoController
     }
 
     @PostMapping("/vigenere")
-    public String performVigenereCipher(@RequestParam String text,
-                                        @RequestParam String key,
+    public String performVigenereCipher(@ModelAttribute VigenereRequest vigenereRequest,
                                         @RequestParam(required = false) boolean decrypt,
                                         Model model)
     {
-        String result = decrypt ? cryptoService.decryptPlayFairCipher(text, key) : cryptoService.playFairCipher(text, key);
+        String result = decrypt ?
+                cryptoService.decryptPlayFairCipher(vigenereRequest.getText(), vigenereRequest.getKey()) :
+                cryptoService.playFairCipher(vigenereRequest.getText(), vigenereRequest.getKey());
 
         model.addAttribute("result", result);
-        model.addAttribute("text", text);
-        model.addAttribute("key", key);
+        model.addAttribute("text", vigenereRequest.getText());
+        model.addAttribute("key", vigenereRequest.getKey());
         model.addAttribute("decrypt", decrypt);
 
         return "vigenere";
@@ -93,11 +93,22 @@ public class CryptoController
         return "playfaircipher";
     }
 
-//    @PostMapping("/playfair")
-//    public ResponseEntity<String> performPlayFairCipher(@RequestBody PlayFairRequest playFairRequest)
-//    {
-//        return ResponseEntity.ok(cryptoService.playFairCipher(playFairRequest.getText(), playFairRequest.getKey()));
-//    }
+    @PostMapping("/playfair")
+    public String performPlayFairCipher(@ModelAttribute PlayFairRequest playFairRequest,
+                                        @RequestParam(required = false) boolean decrypt,
+                                        Model model)
+    {
+        String result = decrypt ?
+                cryptoService.decryptPlayFairCipher(playFairRequest.getText(), playFairRequest.getKey()) :
+                cryptoService.playFairCipher(playFairRequest.getText(), playFairRequest.getKey());
+
+        model.addAttribute("text", playFairRequest.getText());
+        model.addAttribute("key", playFairRequest.getKey());
+        model.addAttribute("decrypt", decrypt);
+        model.addAttribute("result", result);
+
+        return "playfaircipher";
+    }
 
     @PostMapping("/route")
     public ResponseEntity<String> performRouteCipher(@RequestBody RouteRequest routeRequest)
