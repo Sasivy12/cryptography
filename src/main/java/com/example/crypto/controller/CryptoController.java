@@ -110,11 +110,27 @@ public class CryptoController
         return "playfaircipher";
     }
 
-    @PostMapping("/route")
-    public ResponseEntity<String> performRouteCipher(@RequestBody RouteRequest routeRequest)
+    @GetMapping("/route")
+    public String routeCipherPage(Model model)
     {
-        return ResponseEntity.ok(cryptoService.routeCipher
-                (routeRequest.getText(), routeRequest.getRows(), routeRequest.getCols()));
+        model.addAttribute("text", "");
+        model.addAttribute("rows", "");
+        model.addAttribute("cols", "");
+        model.addAttribute("result", "");
+        return "routecipher";
+    }
+
+    @PostMapping("/route")
+    public String performRouteCipher(@ModelAttribute RouteRequest routeRequest, Model model)
+    {
+        String result = cryptoService.routeCipher(routeRequest.getText(), routeRequest.getRows(), routeRequest.getCols());
+
+        model.addAttribute("text", routeRequest.getText());
+        model.addAttribute("rows", routeRequest.getRows());
+        model.addAttribute("cols", routeRequest.getCols());
+        model.addAttribute("result", result);
+
+        return "routecipher";
     }
 
     @PostMapping("/columnartranspos")
