@@ -128,6 +128,51 @@ public class CryptoService
         return null;
     }
 
+    public String decryptPlayFairCipher(String text, String key)
+    {
+        final int SIZE = 5;
+        boolean[] used = new boolean[26];
+        char[][] matrix = new char[SIZE][SIZE];
+        key = key.toUpperCase().replaceAll("J", "I").replaceAll("[^A-Z]", "");
+
+        int index = 0;
+        for (char c : (key + "ABCDEFGHIKLMNOPQRSTUVWXYZ").toCharArray())
+        {
+            if (!used[c - 'A'])
+            {
+                matrix[index / SIZE][index % SIZE] = c;
+                used[c - 'A'] = true;
+                index++;
+            }
+        }
+
+        text = text.toUpperCase().replaceAll("J", "I").replaceAll("[^A-Z]", "");
+
+        StringBuilder decrypted = new StringBuilder();
+        for (int i = 0; i < text.length(); i += 2)
+        {
+            int[] pos1 = findPosition(text.charAt(i), matrix, SIZE);
+            int[] pos2 = findPosition(text.charAt(i + 1), matrix, SIZE);
+
+            if (pos1[0] == pos2[0])
+            {
+                decrypted.append(matrix[pos1[0]][(pos1[1] + 4) % SIZE]);
+                decrypted.append(matrix[pos2[0]][(pos2[1] + 4) % SIZE]);
+            }
+            else if (pos1[1] == pos2[1])
+            {
+                decrypted.append(matrix[(pos1[0] + 4) % SIZE][pos1[1]]);
+                decrypted.append(matrix[(pos2[0] + 4) % SIZE][pos2[1]]);
+            }
+            else
+            {
+                decrypted.append(matrix[pos1[0]][pos2[1]]);
+                decrypted.append(matrix[pos2[0]][pos1[1]]);
+            }
+        }
+        return decrypted.toString();
+    }
+
     public String routeCipher(String text, int rows, int cols)
     {
         text = text.replaceAll("[^A-Za-z]", "").toUpperCase();

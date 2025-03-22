@@ -35,7 +35,7 @@ public class CryptoController
             case "vigenere" -> cryptoService.vigenereCipher(text, key, decrypt);
             case "playfair" -> cryptoService.playFairCipher(text, key);
             case "route" -> cryptoService.routeCipher(text, 4, 4);
-            case "columnar" -> cryptoService.columnarTranspositionCipher(text, key);
+            case "columnartranspos" -> cryptoService.columnarTranspositionCipher(text, key);
             case "railfence" -> cryptoService.railFenceCipher(text, Integer.parseInt(key));
             default -> "Invalid algorithm";
         };
@@ -44,75 +44,118 @@ public class CryptoController
     }
 
     @GetMapping("/caesar")
-    public String caesarPage() {
+    public String caesarPage()
+    {
         return "caesar";
     }
 
     @PostMapping("/caesar")
-    public String performCaesarCipher(@RequestParam String text,
-                                      @RequestParam int shift,
+    public String performCaesarCipher(@ModelAttribute CaesarRequest caesarRequest,
                                       @RequestParam(required = false) boolean decrypt,
-                                      Model model) {
-        String result = cryptoService.caesarCipher(text, shift, decrypt);
+                                      Model model)
+    {
+        String result = cryptoService.caesarCipher(caesarRequest.getText(), caesarRequest.getShift(), decrypt);
+
+        model.addAttribute("text", caesarRequest.getText());
+        model.addAttribute("shift", caesarRequest.getShift());
+        model.addAttribute("decrypt", decrypt);
         model.addAttribute("result", result);
+
         return "caesar";
     }
 
-//    @PostMapping("/caesar/{decrypt}")
-//    public ResponseEntity<String> performCaesarCipher
-//            (@RequestBody CaesarRequest caesarRequest, @PathVariable boolean decrypt)
-//    {
-//        return ResponseEntity.ok(cryptoService.caesarCipher(caesarRequest.getText(), caesarRequest.getShift(), decrypt));
-//    }
-
-//    @PostMapping("/vigenere/{decrypt}")
-//    public ResponseEntity<String> performVigenereCipher
-//            (@RequestBody VigenereRequest vigenereRequest, @PathVariable boolean decrypt)
-//    {
-//        return ResponseEntity.ok
-//                (cryptoService.vigenereCipher(vigenereRequest.getText(), vigenereRequest.getKey(), decrypt));
-//    }
-
     @GetMapping("/vigenere")
-    public String vigenerePage() {
+    public String vigenerePage()
+    {
         return "vigenere";
     }
 
     @PostMapping("/vigenere")
-    public String performVigenereCipher(@RequestParam String text,
-                                        @RequestParam String key,
+    public String performVigenereCipher(@ModelAttribute VigenereRequest vigenereRequest,
                                         @RequestParam(required = false) boolean decrypt,
-                                        Model model) {
-        String result = cryptoService.vigenereCipher(text, key, decrypt);
+                                        Model model)
+    {
+        String result = decrypt ?
+                cryptoService.decryptPlayFairCipher(vigenereRequest.getText(), vigenereRequest.getKey()) :
+                cryptoService.playFairCipher(vigenereRequest.getText(), vigenereRequest.getKey());
+
         model.addAttribute("result", result);
-        model.addAttribute("text", text);
-        model.addAttribute("key", key);
+        model.addAttribute("text", vigenereRequest.getText());
+        model.addAttribute("key", vigenereRequest.getKey());
         model.addAttribute("decrypt", decrypt);
+
         return "vigenere";
     }
 
-    @PostMapping("/playfair")
-    public ResponseEntity<String> performPlayFairCipher(@RequestBody PlayFairRequest playFairRequest)
+    @GetMapping("/playfair")
+    public String playFairPage()
     {
-        return ResponseEntity.ok(cryptoService.playFairCipher(playFairRequest.getText(), playFairRequest.getKey()));
+        return "playfaircipher";
+    }
+
+    @PostMapping("/playfair")
+    public String performPlayFairCipher(@ModelAttribute PlayFairRequest playFairRequest,
+                                        @RequestParam(required = false) boolean decrypt,
+                                        Model model)
+    {
+        String result = decrypt ?
+                cryptoService.decryptPlayFairCipher(playFairRequest.getText(), playFairRequest.getKey()) :
+                cryptoService.playFairCipher(playFairRequest.getText(), playFairRequest.getKey());
+
+        model.addAttribute("text", playFairRequest.getText());
+        model.addAttribute("key", playFairRequest.getKey());
+        model.addAttribute("decrypt", decrypt);
+        model.addAttribute("result", result);
+
+        return "playfaircipher";
+    }
+
+    @GetMapping("/route")
+    public String routeCipherPage(Model model)
+    {
+        model.addAttribute("text", "");
+        model.addAttribute("rows", "");
+        model.addAttribute("cols", "");
+        model.addAttribute("result", "");
+        return "routecipher";
     }
 
     @PostMapping("/route")
-    public ResponseEntity<String> performRouteCipher(@RequestBody RouteRequest routeRequest)
+    public String performRouteCipher(@ModelAttribute RouteRequest routeRequest, Model model)
     {
-        return ResponseEntity.ok(cryptoService.routeCipher
-                (routeRequest.getText(), routeRequest.getRows(), routeRequest.getCols()));
+        String result = cryptoService.routeCipher(routeRequest.getText(), routeRequest.getRows(), routeRequest.getCols());
+
+        model.addAttribute("text", routeRequest.getText());
+        model.addAttribute("rows", routeRequest.getRows());
+        model.addAttribute("cols", routeRequest.getCols());
+        model.addAttribute("result", result);
+
+        return "routecipher";
+    }
+
+    @GetMapping("/columnartranspos")
+    public String columnarTransposPage(Model model)
+    {
+        model.addAttribute("text", "");
+        model.addAttribute("key", "");
+        model.addAttribute("result", "");
+
+        return "columnartranspos";
     }
 
     @PostMapping("/columnartranspos")
-    public ResponseEntity<String> performColumnarTranspositionCipher
-            (@RequestBody ColumnarTranspositionRequest columnarTranspositionRequest)
+    public String performColumnarTranspositionCipher
+            (@ModelAttribute ColumnarTranspositionRequest columnarTranspositionRequest, Model model)
     {
-        return ResponseEntity.ok
-                (cryptoService.
-                        columnarTranspositionCipher(columnarTranspositionRequest.getText(),
-                        columnarTranspositionRequest.getKey())
-                );
+        String result = cryptoService.columnarTranspositionCipher
+                (columnarTranspositionRequest.getText(),
+                 columnarTranspositionRequest.getKey());
+
+        model.addAttribute("text", columnarTranspositionRequest.getText());
+        model.addAttribute("key", columnarTranspositionRequest.getKey());
+        model.addAttribute("result", result);
+
+        return "columnartranspos";
     }
 
     @PostMapping("/railfence")
