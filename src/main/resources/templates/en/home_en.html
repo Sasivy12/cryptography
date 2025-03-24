@@ -11,6 +11,7 @@
             height: 100vh;
             background-color: #f4f4f4;
             margin: 0;
+            position: relative;
         }
         .container {
             background: white;
@@ -42,26 +43,52 @@
             color: white;
             padding: 12px;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 18px;
             transition: 0.3s ease;
         }
         .cipher-list a:hover {
             background-color: #0056b3;
         }
+        .language-switch {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .language-switch a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+        .language-switch img {
+            width: 25px;
+            height: 18px;
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
+
+<div class="language-switch">
+    <a th:href="@{/home/ru}">
+        <img src="https://upload.wikimedia.org/wikipedia/en/f/f3/Flag_of_Russia.svg" alt="RU">
+        Русский
+    </a>
+</div>
 
 <div class="container">
     <h1>Cryptography App</h1>
     <h2>Select an Algorithm:</h2>
     <ul class="cipher-list">
-        <li><a th:href="@{/caesar}">Caesar Cipher</a></li>
-        <li><a th:href="@{/vigenere}">Vigenère Cipher</a></li>
-        <li><a th:href="@{/playfair}">Playfair Cipher</a></li>
-        <li><a th:href="@{/route}">Route Cipher</a></li>
-        <li><a th:href="@{/columnartranspos}">Columnar Transposition</a></li>
-        <li><a th:href="@{/railfence}">Rail Fence Cipher</a></li>
+        <li><a th:href="@{/caesar/en}">Caesar Cipher</a></li>
+        <li><a th:href="@{/vigenere/en}">Vigenère Cipher</a></li>
+        <li><a th:href="@{/playfair/en}">Playfair Cipher</a></li>
+        <li><a th:href="@{/route/en}">Route Cipher</a></li>
+        <li><a th:href="@{/columnartranspos/en}">Columnar Transposition</a></li>
+        <li><a th:href="@{/railfence/en}">Rail Fence Cipher</a></li>
     </ul>
 </div>
 
