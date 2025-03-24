@@ -81,7 +81,7 @@
 
 <div class="container">
     <h1>Caesar Cipher</h1>
-    <form action="#" th:action="@{/caesar}" method="post">
+    <form action="#" th:action="@{/caesar/en}" method="post">
         <label for="text">Enter Text:</label>
         <input type="text" id="text" name="text" th:value="${text}" required>
 
@@ -100,7 +100,7 @@
         <p th:text="${result}"></p>
     </div>
 
-    <a th:href="@{/}">Back to Home</a>
+    <a th:href="@{/home/en}">Back to Home</a>
 </div>
 
 </body>

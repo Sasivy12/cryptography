@@ -6,30 +6,33 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 @Service
-public class CryptoService
+public class CryptoRuService
 {
+
+    private static final int RUS_ALPHABET_SIZE = 33;
+    private static final char UPPER_A = 'А', UPPER_YA = 'Я';
+    private static final char LOWER_A = 'а', LOWER_YA = 'я';
+
     public String caesarCipher(String text, int shift, boolean decrypt)
     {
         if (decrypt)
         {
-            shift = 26 - (shift % 26);
+            shift = RUS_ALPHABET_SIZE - (shift % RUS_ALPHABET_SIZE);
         }
 
         StringBuilder result = new StringBuilder();
-
         for (char character : text.toCharArray())
         {
-            if (Character.isLetter(character))
+            if (Character.UnicodeBlock.of(character) == Character.UnicodeBlock.CYRILLIC)
             {
-                char base = Character.isUpperCase(character) ? 'A' : 'a';
-                result.append((char) ((character - base + shift) % 26 + base));
+                char base = Character.isUpperCase(character) ? UPPER_A : LOWER_A;
+                result.append((char) ((character - base + shift) % RUS_ALPHABET_SIZE + base));
             }
             else
             {
                 result.append(character);
             }
         }
-
         return result.toString();
     }
 
@@ -42,15 +45,15 @@ public class CryptoService
         for (int i = 0, j = 0; i < text.length(); i++)
         {
             char character = text.charAt(i);
-            if (Character.isLetter(character))
+            if (Character.UnicodeBlock.of(character) == Character.UnicodeBlock.CYRILLIC)
             {
-                char base = Character.isUpperCase(character) ? 'A' : 'a';
-                int keyShift = key.charAt(j % keyLength) - 'a';
+                char base = Character.isUpperCase(character) ? UPPER_A : LOWER_A;
+                int keyShift = key.charAt(j % keyLength) - LOWER_A;
                 if (decrypt)
                 {
-                    keyShift = 26 - keyShift;
+                    keyShift = RUS_ALPHABET_SIZE - keyShift;
                 }
-                result.append((char) ((character - base + keyShift) % 26 + base));
+                result.append((char) ((character - base + keyShift) % RUS_ALPHABET_SIZE + base));
                 j++;
             }
             else
@@ -58,38 +61,31 @@ public class CryptoService
                 result.append(character);
             }
         }
-
         return result.toString();
     }
 
     public String playFairCipher(String text, String key)
     {
-        final int SIZE = 5;
-        boolean[] used = new boolean[26];
+        final int SIZE = 6;
+        boolean[] used = new boolean[RUS_ALPHABET_SIZE];
         char[][] matrix = new char[SIZE][SIZE];
-        key = key.toUpperCase().replaceAll("J", "I").replaceAll("[^A-Z]", "");
+
+        key = key.toUpperCase().replaceAll("[^А-ЯЁ]", "");
+        String alphabet = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
 
         int index = 0;
-        for (char c : (key + "ABCDEFGHIKLMNOPQRSTUVWXYZ").toCharArray())
+        for (char c : (key + alphabet).toCharArray())
         {
-            if (!used[c - 'A']) {
+            if (!used[c - UPPER_A])
+            {
                 matrix[index / SIZE][index % SIZE] = c;
-                used[c - 'A'] = true;
+                used[c - UPPER_A] = true;
                 index++;
             }
         }
 
-        text = text.toUpperCase().replaceAll("J", "I").replaceAll("[^A-Z]", "");
-        StringBuilder sb = new StringBuilder(text);
-        for (int i = 1; i < sb.length(); i += 2)
-        {
-            if (sb.charAt(i) == sb.charAt(i - 1))
-            {
-                sb.insert(i, 'X');
-            }
-        }
-        if (sb.length() % 2 != 0) sb.append('X');
-        text = sb.toString();
+        text = text.toUpperCase().replaceAll("[^А-ЯЁ]", "");
+        if (text.length() % 2 != 0) text += "Х";
 
         StringBuilder encrypted = new StringBuilder();
         for (int i = 0; i < text.length(); i += 2)
@@ -128,54 +124,9 @@ public class CryptoService
         return null;
     }
 
-    public String decryptPlayFairCipher(String text, String key)
-    {
-        final int SIZE = 5;
-        boolean[] used = new boolean[26];
-        char[][] matrix = new char[SIZE][SIZE];
-        key = key.toUpperCase().replaceAll("J", "I").replaceAll("[^A-Z]", "");
-
-        int index = 0;
-        for (char c : (key + "ABCDEFGHIKLMNOPQRSTUVWXYZ").toCharArray())
-        {
-            if (!used[c - 'A'])
-            {
-                matrix[index / SIZE][index % SIZE] = c;
-                used[c - 'A'] = true;
-                index++;
-            }
-        }
-
-        text = text.toUpperCase().replaceAll("J", "I").replaceAll("[^A-Z]", "");
-
-        StringBuilder decrypted = new StringBuilder();
-        for (int i = 0; i < text.length(); i += 2)
-        {
-            int[] pos1 = findPosition(text.charAt(i), matrix, SIZE);
-            int[] pos2 = findPosition(text.charAt(i + 1), matrix, SIZE);
-
-            if (pos1[0] == pos2[0])
-            {
-                decrypted.append(matrix[pos1[0]][(pos1[1] + 4) % SIZE]);
-                decrypted.append(matrix[pos2[0]][(pos2[1] + 4) % SIZE]);
-            }
-            else if (pos1[1] == pos2[1])
-            {
-                decrypted.append(matrix[(pos1[0] + 4) % SIZE][pos1[1]]);
-                decrypted.append(matrix[(pos2[0] + 4) % SIZE][pos2[1]]);
-            }
-            else
-            {
-                decrypted.append(matrix[pos1[0]][pos2[1]]);
-                decrypted.append(matrix[pos2[0]][pos1[1]]);
-            }
-        }
-        return decrypted.toString();
-    }
-
     public String routeCipher(String text, int rows, int cols)
     {
-        text = text.replaceAll("[^A-Za-z]", "").toUpperCase();
+        text = text.replaceAll("[^А-Яа-я]", "").toUpperCase();
         char[][] grid = new char[rows][cols];
         StringBuilder encrypted = new StringBuilder();
 
@@ -184,7 +135,7 @@ public class CryptoService
         {
             for (int j = 0; j < cols; j++)
             {
-                grid[i][j] = index < text.length() ? text.charAt(index++) : 'X';
+                grid[i][j] = index < text.length() ? text.charAt(index++) : 'Х';
             }
         }
 
@@ -195,23 +146,21 @@ public class CryptoService
                 encrypted.append(grid[i][j]);
             }
         }
-
         return encrypted.toString();
     }
 
     public String columnarTranspositionCipher(String text, String key)
     {
-        text = text.replaceAll("[^A-Za-z]", "").toUpperCase();
+        text = text.replaceAll("[^А-Яа-я]", "").toUpperCase();
         int cols = key.length();
         int rows = (int) Math.ceil((double) text.length() / cols);
         char[][] grid = new char[rows][cols];
 
         int index = 0;
-        for (int i = 0; i < rows; i++)
-        {
+        for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++)
             {
-                grid[i][j] = (index < text.length()) ? text.charAt(index++) : 'X';
+                grid[i][j] = (index < text.length()) ? text.charAt(index++) : 'Х';
             }
         }
 
@@ -230,10 +179,9 @@ public class CryptoService
         return encrypted.toString();
     }
 
-
     public String railFenceCipher(String text, int rails)
     {
-        text = text.replaceAll("[^A-Za-z]", "").toUpperCase();
+        text = text.replaceAll("[^А-Яа-я]", "").toUpperCase();
         char[][] rail = new char[rails][text.length()];
 
         int row = 0, step = 1;
@@ -256,8 +204,6 @@ public class CryptoService
                 if (c != 0) encrypted.append(c);
             }
         }
-
         return encrypted.toString();
     }
-
 }

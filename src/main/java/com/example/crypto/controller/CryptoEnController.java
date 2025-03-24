@@ -1,28 +1,27 @@
 package com.example.crypto.controller;
 
 import com.example.crypto.request.*;
-import com.example.crypto.service.CryptoService;
+import com.example.crypto.service.CryptoEnService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping
-public class CryptoController
+public class CryptoEnController
 {
     @Autowired
-    private CryptoService cryptoService;
+    private CryptoEnService cryptoService;
 
-    @GetMapping("/")
+    @GetMapping("/home/en")
     public String home(Model model)
     {
         model.addAttribute("title", "Cryptography App");
-        return "home";
+        return "en/home_en";
     }
 
-    @PostMapping("/encrypt")
+    @PostMapping("/encrypt/en")
     public String encrypt(@RequestParam String algorithm,
                           @RequestParam String text,
                           @RequestParam(required = false) String key,
@@ -40,16 +39,16 @@ public class CryptoController
             default -> "Invalid algorithm";
         };
         model.addAttribute("result", result);
-        return "home";
+        return "en/home_en";
     }
 
-    @GetMapping("/caesar")
+    @GetMapping("/caesar/en")
     public String caesarPage()
     {
-        return "caesar";
+        return "en/caesar_en";
     }
 
-    @PostMapping("/caesar")
+    @PostMapping("/caesar/en")
     public String performCaesarCipher(@ModelAttribute CaesarRequest caesarRequest,
                                       @RequestParam(required = false) boolean decrypt,
                                       Model model)
@@ -61,39 +60,37 @@ public class CryptoController
         model.addAttribute("decrypt", decrypt);
         model.addAttribute("result", result);
 
-        return "caesar";
+        return "en/caesar_en";
     }
 
-    @GetMapping("/vigenere")
+    @GetMapping("/vigenere/en")
     public String vigenerePage()
     {
-        return "vigenere";
+        return "en/vigenere_en";
     }
 
-    @PostMapping("/vigenere")
+    @PostMapping("/vigenere/en")
     public String performVigenereCipher(@ModelAttribute VigenereRequest vigenereRequest,
                                         @RequestParam(required = false) boolean decrypt,
                                         Model model)
     {
-        String result = decrypt ?
-                cryptoService.decryptPlayFairCipher(vigenereRequest.getText(), vigenereRequest.getKey()) :
-                cryptoService.playFairCipher(vigenereRequest.getText(), vigenereRequest.getKey());
+        String result = cryptoService.vigenereCipher(vigenereRequest.getText(), vigenereRequest.getKey(), decrypt);
 
         model.addAttribute("result", result);
         model.addAttribute("text", vigenereRequest.getText());
         model.addAttribute("key", vigenereRequest.getKey());
         model.addAttribute("decrypt", decrypt);
 
-        return "vigenere";
+        return "en/vigenere_en";
     }
 
-    @GetMapping("/playfair")
+    @GetMapping("/playfair/en")
     public String playFairPage()
     {
-        return "playfaircipher";
+        return "en/playfaircipher_en";
     }
 
-    @PostMapping("/playfair")
+    @PostMapping("/playfair/en")
     public String performPlayFairCipher(@ModelAttribute PlayFairRequest playFairRequest,
                                         @RequestParam(required = false) boolean decrypt,
                                         Model model)
@@ -107,20 +104,21 @@ public class CryptoController
         model.addAttribute("decrypt", decrypt);
         model.addAttribute("result", result);
 
-        return "playfaircipher";
+        return "en/playfaircipher_en";
     }
 
-    @GetMapping("/route")
+    @GetMapping("/route/en")
     public String routeCipherPage(Model model)
     {
         model.addAttribute("text", "");
         model.addAttribute("rows", "");
         model.addAttribute("cols", "");
         model.addAttribute("result", "");
-        return "routecipher";
+
+        return "en/routecipher_en";
     }
 
-    @PostMapping("/route")
+    @PostMapping("/route/en")
     public String performRouteCipher(@ModelAttribute RouteRequest routeRequest, Model model)
     {
         String result = cryptoService.routeCipher(routeRequest.getText(), routeRequest.getRows(), routeRequest.getCols());
@@ -130,20 +128,20 @@ public class CryptoController
         model.addAttribute("cols", routeRequest.getCols());
         model.addAttribute("result", result);
 
-        return "routecipher";
+        return "en/routecipher_en";
     }
 
-    @GetMapping("/columnartranspos")
+    @GetMapping("/columnartranspos/en")
     public String columnarTransposPage(Model model)
     {
         model.addAttribute("text", "");
         model.addAttribute("key", "");
         model.addAttribute("result", "");
 
-        return "columnartranspos";
+        return "en/columnartranspos_en";
     }
 
-    @PostMapping("/columnartranspos")
+    @PostMapping("/columnartranspos/en")
     public String performColumnarTranspositionCipher
             (@ModelAttribute ColumnarTranspositionRequest columnarTranspositionRequest, Model model)
     {
@@ -155,20 +153,20 @@ public class CryptoController
         model.addAttribute("key", columnarTranspositionRequest.getKey());
         model.addAttribute("result", result);
 
-        return "columnartranspos";
+        return "en/columnartranspos_en";
     }
 
-    @GetMapping("/railfence")
+    @GetMapping("/railfence/en")
     public String railFencePage(Model model)
     {
         model.addAttribute("text", "");
         model.addAttribute("rails", "");
         model.addAttribute("result", "");
 
-        return "railfence";
+        return "en/railfence_en";
     }
 
-    @PostMapping("/railfence")
+    @PostMapping("/railfence/en")
     public String performRailFenceCipher(@ModelAttribute RailFenceRequest railFenceRequest, Model model)
     {
         String result = cryptoService.railFenceCipher(railFenceRequest.getText(), railFenceRequest.getRails());
@@ -177,6 +175,6 @@ public class CryptoController
         model.addAttribute("rails", railFenceRequest.getRails());
         model.addAttribute("result", result);
 
-        return "railfence";
+        return "en/railfence_en";
     }
 }
