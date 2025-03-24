@@ -158,10 +158,25 @@ public class CryptoController
         return "columnartranspos";
     }
 
-    @PostMapping("/railfence")
-    public ResponseEntity<String> performRailFenceCipher(@RequestBody RailFenceRequest railFenceRequest)
+    @GetMapping("/railfence")
+    public String railFencePage(Model model)
     {
-        return ResponseEntity.ok
-                (cryptoService.railFenceCipher(railFenceRequest.getText(), railFenceRequest.getRails()));
+        model.addAttribute("text", "");
+        model.addAttribute("rails", "");
+        model.addAttribute("result", "");
+
+        return "railfence";
+    }
+
+    @PostMapping("/railfence")
+    public String performRailFenceCipher(@ModelAttribute RailFenceRequest railFenceRequest, Model model)
+    {
+        String result = cryptoService.railFenceCipher(railFenceRequest.getText(), railFenceRequest.getRails());
+
+        model.addAttribute("text", railFenceRequest.getText());
+        model.addAttribute("rails", railFenceRequest.getRails());
+        model.addAttribute("result", result);
+
+        return "railfence";
     }
 }
