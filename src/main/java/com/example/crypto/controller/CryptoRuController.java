@@ -155,4 +155,26 @@ public class CryptoRuController
 
         return "ru/columnartranspos_ru";
     }
+
+    @GetMapping("/railfence/ru")
+    public String railFencePage(Model model)
+    {
+        model.addAttribute("text", "");
+        model.addAttribute("rails", "");
+        model.addAttribute("result", "");
+
+        return "ru/railfence_ru";
+    }
+
+    @PostMapping("/railfence/ru")
+    public String performRailFenceCipher(@ModelAttribute RailFenceRequest railFenceRequest, Model model)
+    {
+        String result = cryptoService.railFenceCipher(railFenceRequest.getText(), railFenceRequest.getRails());
+
+        model.addAttribute("text", railFenceRequest.getText());
+        model.addAttribute("rails", railFenceRequest.getRails());
+        model.addAttribute("result", result);
+
+        return "ru/railfence_ru";
+    }
 }
