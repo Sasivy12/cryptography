@@ -1,9 +1,6 @@
 package com.example.crypto.controller;
 
-import com.example.crypto.request.CaesarRequest;
-import com.example.crypto.request.PlayFairRequest;
-import com.example.crypto.request.RouteRequest;
-import com.example.crypto.request.VigenereRequest;
+import com.example.crypto.request.*;
 import com.example.crypto.service.CryptoRuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -132,5 +129,30 @@ public class CryptoRuController
         model.addAttribute("result", result);
 
         return "ru/routecipher_ru";
+    }
+
+    @GetMapping("/columnartranspos/ru")
+    public String columnarTransposPage(Model model)
+    {
+        model.addAttribute("text", "");
+        model.addAttribute("key", "");
+        model.addAttribute("result", "");
+
+        return "ru/columnartranspos_ru";
+    }
+
+    @PostMapping("/columnartranspos/ru")
+    public String performColumnarTranspositionCipher
+            (@ModelAttribute ColumnarTranspositionRequest columnarTranspositionRequest, Model model)
+    {
+        String result = cryptoService.columnarTranspositionCipher
+                (columnarTranspositionRequest.getText(),
+                columnarTranspositionRequest.getKey());
+
+        model.addAttribute("text", columnarTranspositionRequest.getText());
+        model.addAttribute("key", columnarTranspositionRequest.getKey());
+        model.addAttribute("result", result);
+
+        return "ru/columnartranspos_ru";
     }
 }
