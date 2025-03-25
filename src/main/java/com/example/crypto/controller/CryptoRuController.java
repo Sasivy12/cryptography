@@ -1,6 +1,7 @@
 package com.example.crypto.controller;
 
 import com.example.crypto.request.CaesarRequest;
+import com.example.crypto.request.PlayFairRequest;
 import com.example.crypto.request.VigenereRequest;
 import com.example.crypto.service.CryptoRuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,29 @@ public class CryptoRuController
         model.addAttribute("decrypt", decrypt);
 
         return "ru/vigenere_ru";
+    }
+
+    @GetMapping("/playfair/ru")
+    public String playFairPage()
+    {
+        return "ru/playfaircipher_ru";
+    }
+
+    @PostMapping("/playfair/ru")
+    public String performPlayFairCipher(@ModelAttribute PlayFairRequest playFairRequest,
+                                        @RequestParam(required = false) boolean decrypt,
+                                        Model model)
+    {
+        String result = decrypt ?
+                cryptoService.decryptPlayFairCipher(playFairRequest.getText(), playFairRequest.getKey()) :
+                cryptoService.playFairCipher(playFairRequest.getText(), playFairRequest.getKey());
+
+        model.addAttribute("text", playFairRequest.getText());
+        model.addAttribute("key", playFairRequest.getKey());
+        model.addAttribute("decrypt", decrypt);
+        model.addAttribute("result", result);
+
+        return "ru/playfaircipher_ru";
     }
 
 }
