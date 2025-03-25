@@ -2,6 +2,7 @@ package com.example.crypto.controller;
 
 import com.example.crypto.request.CaesarRequest;
 import com.example.crypto.request.PlayFairRequest;
+import com.example.crypto.request.RouteRequest;
 import com.example.crypto.request.VigenereRequest;
 import com.example.crypto.service.CryptoRuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,4 +110,27 @@ public class CryptoRuController
         return "ru/playfaircipher_ru";
     }
 
+    @GetMapping("/route/ru")
+    public String routeCipherPage(Model model)
+    {
+        model.addAttribute("text", "");
+        model.addAttribute("rows", "");
+        model.addAttribute("cols", "");
+        model.addAttribute("result", "");
+
+        return "ru/routecipher_ru";
+    }
+
+    @PostMapping("/route/ru")
+    public String performRouteCipher(@ModelAttribute RouteRequest routeRequest, Model model)
+    {
+        String result = cryptoService.routeCipher(routeRequest.getText(), routeRequest.getRows(), routeRequest.getCols());
+
+        model.addAttribute("text", routeRequest.getText());
+        model.addAttribute("rows", routeRequest.getRows());
+        model.addAttribute("cols", routeRequest.getCols());
+        model.addAttribute("result", result);
+
+        return "ru/routecipher_ru";
+    }
 }
