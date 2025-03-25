@@ -1,7 +1,6 @@
 package com.example.crypto.controller;
 
-import com.example.crypto.request.CaesarRequest;
-import com.example.crypto.request.VigenereRequest;
+import com.example.crypto.request.*;
 import com.example.crypto.service.CryptoRuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -85,4 +84,97 @@ public class CryptoRuController
         return "ru/vigenere_ru";
     }
 
+    @GetMapping("/playfair/ru")
+    public String playFairPage()
+    {
+        return "ru/playfaircipher_ru";
+    }
+
+    @PostMapping("/playfair/ru")
+    public String performPlayFairCipher(@ModelAttribute PlayFairRequest playFairRequest,
+                                        @RequestParam(required = false) boolean decrypt,
+                                        Model model)
+    {
+        String result = decrypt ?
+                cryptoService.decryptPlayFairCipher(playFairRequest.getText(), playFairRequest.getKey()) :
+                cryptoService.playFairCipher(playFairRequest.getText(), playFairRequest.getKey());
+
+        model.addAttribute("text", playFairRequest.getText());
+        model.addAttribute("key", playFairRequest.getKey());
+        model.addAttribute("decrypt", decrypt);
+        model.addAttribute("result", result);
+
+        return "ru/playfaircipher_ru";
+    }
+
+    @GetMapping("/route/ru")
+    public String routeCipherPage(Model model)
+    {
+        model.addAttribute("text", "");
+        model.addAttribute("rows", "");
+        model.addAttribute("cols", "");
+        model.addAttribute("result", "");
+
+        return "ru/routecipher_ru";
+    }
+
+    @PostMapping("/route/ru")
+    public String performRouteCipher(@ModelAttribute RouteRequest routeRequest, Model model)
+    {
+        String result = cryptoService.routeCipher(routeRequest.getText(), routeRequest.getRows(), routeRequest.getCols());
+
+        model.addAttribute("text", routeRequest.getText());
+        model.addAttribute("rows", routeRequest.getRows());
+        model.addAttribute("cols", routeRequest.getCols());
+        model.addAttribute("result", result);
+
+        return "ru/routecipher_ru";
+    }
+
+    @GetMapping("/columnartranspos/ru")
+    public String columnarTransposPage(Model model)
+    {
+        model.addAttribute("text", "");
+        model.addAttribute("key", "");
+        model.addAttribute("result", "");
+
+        return "ru/columnartranspos_ru";
+    }
+
+    @PostMapping("/columnartranspos/ru")
+    public String performColumnarTranspositionCipher
+            (@ModelAttribute ColumnarTranspositionRequest columnarTranspositionRequest, Model model)
+    {
+        String result = cryptoService.columnarTranspositionCipher
+                (columnarTranspositionRequest.getText(),
+                columnarTranspositionRequest.getKey());
+
+        model.addAttribute("text", columnarTranspositionRequest.getText());
+        model.addAttribute("key", columnarTranspositionRequest.getKey());
+        model.addAttribute("result", result);
+
+        return "ru/columnartranspos_ru";
+    }
+
+    @GetMapping("/railfence/ru")
+    public String railFencePage(Model model)
+    {
+        model.addAttribute("text", "");
+        model.addAttribute("rails", "");
+        model.addAttribute("result", "");
+
+        return "ru/railfence_ru";
+    }
+
+    @PostMapping("/railfence/ru")
+    public String performRailFenceCipher(@ModelAttribute RailFenceRequest railFenceRequest, Model model)
+    {
+        String result = cryptoService.railFenceCipher(railFenceRequest.getText(), railFenceRequest.getRails());
+
+        model.addAttribute("text", railFenceRequest.getText());
+        model.addAttribute("rails", railFenceRequest.getRails());
+        model.addAttribute("result", result);
+
+        return "ru/railfence_ru";
+    }
 }

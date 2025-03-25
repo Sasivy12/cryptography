@@ -112,6 +112,53 @@ public class CryptoRuService
         return encrypted.toString();
     }
 
+    public String decryptPlayFairCipher(String text, String key)
+    {
+        final int SIZE = 6;
+        boolean[] used = new boolean[RUS_ALPHABET_SIZE];
+        char[][] matrix = new char[SIZE][SIZE];
+
+        key = key.toUpperCase().replaceAll("[^А-ЯЁ]", "");
+        String alphabet = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+
+        int index = 0;
+        for (char c : (key + alphabet).toCharArray())
+        {
+            if (!used[c - UPPER_A])
+            {
+                matrix[index / SIZE][index % SIZE] = c;
+                used[c - UPPER_A] = true;
+                index++;
+            }
+        }
+
+        text = text.toUpperCase().replaceAll("[^А-ЯЁ]", "");
+
+        StringBuilder decrypted = new StringBuilder();
+        for (int i = 0; i < text.length(); i += 2)
+        {
+            int[] pos1 = findPosition(text.charAt(i), matrix, SIZE);
+            int[] pos2 = findPosition(text.charAt(i + 1), matrix, SIZE);
+
+            if (pos1[0] == pos2[0])
+            {
+                decrypted.append(matrix[pos1[0]][(pos1[1] + SIZE - 1) % SIZE]);
+                decrypted.append(matrix[pos2[0]][(pos2[1] + SIZE - 1) % SIZE]);
+            }
+            else if (pos1[1] == pos2[1])
+            {
+                decrypted.append(matrix[(pos1[0] + SIZE - 1) % SIZE][pos1[1]]);
+                decrypted.append(matrix[(pos2[0] + SIZE - 1) % SIZE][pos2[1]]);
+            }
+            else
+            {
+                decrypted.append(matrix[pos1[0]][pos2[1]]);
+                decrypted.append(matrix[pos2[0]][pos1[1]]);
+            }
+        }
+        return decrypted.toString();
+    }
+
     private static int[] findPosition(char c, char[][] matrix, int SIZE)
     {
         for (int i = 0; i < SIZE; i++)
