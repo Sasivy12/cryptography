@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Controller
 @RequestMapping
 public class CryptoRuController
@@ -147,7 +149,7 @@ public class CryptoRuController
     {
         String result = cryptoService.columnarTranspositionCipher
                 (columnarTranspositionRequest.getText(),
-                columnarTranspositionRequest.getKey());
+                        columnarTranspositionRequest.getKey());
 
         model.addAttribute("text", columnarTranspositionRequest.getText());
         model.addAttribute("key", columnarTranspositionRequest.getKey());
@@ -176,5 +178,55 @@ public class CryptoRuController
         model.addAttribute("result", result);
 
         return "ru/railfence_ru";
+    }
+
+
+    @GetMapping("/rsa/ru")
+    public String rsaPage(Model model)
+    {
+        model.addAttribute("publicKey", "");
+        model.addAttribute("privateKey", "");
+        model.addAttribute("keySize", 2048);
+        return "ru/rsa_ru";
+    }
+
+    @PostMapping("/rsa/ru/generate-keys")
+    public String generateRsaKeys(@ModelAttribute RSARequest rsaRequest, Model model)
+    {
+        Map<String, String> keys = cryptoService.generateRsaKeys(rsaRequest.getKeySize());
+
+        model.addAttribute("publicKey", keys.get("public"));
+        model.addAttribute("privateKey", keys.get("private"));
+        model.addAttribute("keySize", rsaRequest.getKeySize());
+        model.addAttribute("text", rsaRequest.getText());
+        return "ru/rsa_ru";
+    }
+
+    @PostMapping("/rsa/ru/encrypt")
+    public String performRsaEncryption(@ModelAttribute RSARequest rsaRequest, Model model)
+    {
+        String encrypted = cryptoService.rsaEncrypt(rsaRequest.getText(), rsaRequest.getPublicKey());
+
+        model.addAttribute("result", encrypted);
+        model.addAttribute("text", rsaRequest.getText());
+        model.addAttribute("publicKey", rsaRequest.getPublicKey());
+        model.addAttribute("privateKey", rsaRequest.getPrivateKey());
+        model.addAttribute("keySize", rsaRequest.getKeySize());
+
+        return "ru/rsa_ru";
+    }
+
+    @PostMapping("/rsa/ru/decrypt")
+    public String performRsaDecryption(@ModelAttribute RSARequest rsaRequest, Model model)
+    {
+        String decrypted = cryptoService.rsaDecrypt(rsaRequest.getText(), rsaRequest.getPrivateKey());
+
+        model.addAttribute("result", decrypted);
+        model.addAttribute("text", rsaRequest.getText());
+        model.addAttribute("publicKey", rsaRequest.getPublicKey());
+        model.addAttribute("privateKey", rsaRequest.getPrivateKey());
+        model.addAttribute("keySize", rsaRequest.getKeySize());
+
+        return "ru/rsa_ru";
     }
 }
