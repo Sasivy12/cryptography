@@ -2,8 +2,11 @@ package com.example.crypto.service;
 
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import javax.crypto.Cipher;
+import java.security.*;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.*;
 
 @Service
 public class CryptoRuService
@@ -252,5 +255,71 @@ public class CryptoRuService
             }
         }
         return encrypted.toString();
+    }
+
+    public Map<String, String> generateRsaKeys(int keySize)
+    {
+        try
+        {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(keySize);
+            KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+            PublicKey publicKey = keyPair.getPublic();
+            PrivateKey privateKey = keyPair.getPrivate();
+
+            Map<String, String> keys = new HashMap<>();
+            keys.put("public", Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+            keys.put("private", Base64.getEncoder().encodeToString(privateKey.getEncoded()));
+
+            return keys;
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            throw new RuntimeException("Error generating RSA keys", e);
+        }
+    }
+
+    public String rsaEncrypt(String text, String publicKeyStr)
+    {
+        try
+        {
+            byte[] publicKeyBytes = Base64.getDecoder().decode(publicKeyStr);
+            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            PublicKey publicKey = keyFactory.generatePublic(keySpec);
+
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+
+            byte[] encryptedBytes = cipher.doFinal(text.getBytes());
+            return Base64.getEncoder().encodeToString(encryptedBytes);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("Error encrypting with RSA", e);
+        }
+    }
+
+    public String rsaDecrypt(String encryptedText, String privateKeyStr)
+    {
+        try
+        {
+            byte[] privateKeyBytes = Base64.getDecoder().decode(privateKeyStr);
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
+
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+
+            byte[] encryptedBytes = Base64.getDecoder().decode(encryptedText);
+            byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+            return new String(decryptedBytes);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("Error decrypting with RSA", e);
+        }
     }
 }
