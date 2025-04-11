@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>ECSDA Operations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 320px;
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        input[type="text"], textarea {
+            width: 95%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>ECDSA Операции</h1>
+
+    <form th:action="@{/ecdsa/ru/generate-keys}" method="post">
+        <button type="submit">Сгенерировать ECDSA ключи</button>
+    </form>
+
+    <form th:action="@{/ecdsa/ru/sign}" method="post">
+        <label for="message">Сообщение для подписи:</label>
+        <textarea id="message" name="text" th:text="${text}" required></textarea>
+
+        <label for="privateKey">Закрытый ключ:</label>
+        <textarea id="privateKey" name="privateKey" th:text="${privateKey}" required></textarea>
+
+        <input type="hidden" name="publicKey" th:value="${publicKey}" />
+
+        <input type="hidden" name="keySize" th:value="${keySize}" />
+
+        <button type="submit">Подписать сообщение</button>
+    </form>
+
+    <form th:action="@{/ecdsa/ru/verify}" method="post">
+        <label for="verifyMessage">Сообщение для проверки:</label>
+        <textarea id="verifyMessage" name="text" th:text="${textToVerify}" required></textarea>
+
+        <label for="signature">Signature:</label>
+        <textarea id="signature" name="signature" th:text="${signature}" required></textarea>
+
+        <label for="publicKey">Открытый ключ:</label>
+        <textarea id="publicKey" name="publicKey" th:text="${publicKey}" required></textarea>
+
+        <button type="submit">Проверить подпись</button>
+    </form>
+
+
+    <div class="result">
+        <p th:text="${result}"></p>
+    </div>
+
+</div>
+
+</body>
+</html>

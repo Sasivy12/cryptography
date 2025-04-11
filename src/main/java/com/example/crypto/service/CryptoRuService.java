@@ -322,4 +322,72 @@ public class CryptoRuService
             throw new RuntimeException("Error decrypting with RSA", e);
         }
     }
+
+    public Map<String, String> generateEcdsaKeys(int keySize)
+    {
+        try
+        {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
+            keyPairGenerator.initialize(keySize);
+            KeyPair keyPair = keyPairGenerator.generateKeyPair();
+
+            PublicKey publicKey = keyPair.getPublic();
+            PrivateKey privateKey = keyPair.getPrivate();
+
+            Map<String, String> keys = new HashMap<>();
+            keys.put("public", Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+            keys.put("private", Base64.getEncoder().encodeToString(privateKey.getEncoded()));
+
+            return keys;
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            throw new RuntimeException("Error generating ECDSA keys", e);
+        }
+    }
+
+    public String ecdsaSign(String text, String privateKeyStr)
+    {
+        try
+        {
+            byte[] privateKeyBytes = Base64.getDecoder().decode(privateKeyStr);
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("EC");
+            PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
+
+            Signature signature = Signature.getInstance("SHA256withECDSA");
+            signature.initSign(privateKey);
+            signature.update(text.getBytes());
+
+            byte[] signatureBytes = signature.sign();
+            return Base64.getEncoder().encodeToString(signatureBytes);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("Error signing with ECDSA", e);
+        }
+    }
+
+
+    public boolean ecdsaVerify(String text, String signatureStr, String publicKeyStr)
+    {
+        try
+        {
+            byte[] publicKeyBytes = Base64.getDecoder().decode(publicKeyStr);
+            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("EC");
+            PublicKey publicKey = keyFactory.generatePublic(keySpec);
+
+            Signature signature = Signature.getInstance("SHA256withECDSA");
+            signature.initVerify(publicKey);
+            signature.update(text.getBytes());
+
+            byte[] signatureBytes = Base64.getDecoder().decode(signatureStr);
+            return signature.verify(signatureBytes);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("Error verifying signature with ECDSA", e);
+        }
+    }
 }

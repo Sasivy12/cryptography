@@ -234,7 +234,8 @@ public class CryptoEnController
     }
 
     @GetMapping("/ecdsa/en")
-    public String ecdsaPage(Model model) {
+    public String ecdsaPage(Model model)
+    {
         model.addAttribute("publicKey", "");
         model.addAttribute("privateKey", "");
         model.addAttribute("keySize", 256);
@@ -242,17 +243,16 @@ public class CryptoEnController
     }
 
     @PostMapping("/ecdsa/en/generate-keys")
-    public String generateEcdsaKeys(@ModelAttribute EcdsaRequest ecdsaRequest, Model model) {
-        // Генерация ключей
+    public String generateEcdsaKeys(@ModelAttribute EcdsaRequest ecdsaRequest, Model model)
+    {
         Map<String, String> keys = cryptoService.generateEcdsaKeys(ecdsaRequest.getKeySize());
 
-        // Добавляем сгенерированные ключи в модель
         model.addAttribute("publicKey", keys.get("public"));
         model.addAttribute("privateKey", keys.get("private"));
         model.addAttribute("keySize", ecdsaRequest.getKeySize());
         model.addAttribute("text", ecdsaRequest.getText());
 
-        return "en/ecdsa_en";  // Перезагружаем страницу с новыми данными
+        return "en/ecdsa_en";
     }
 
     @PostMapping("/ecdsa/en/sign")

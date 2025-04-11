@@ -229,4 +229,55 @@ public class CryptoRuController
 
         return "ru/rsa_ru";
     }
+
+    @GetMapping("/ecdsa/ru")
+    public String ecdsaPage(Model model)
+    {
+        model.addAttribute("publicKey", "");
+        model.addAttribute("privateKey", "");
+        model.addAttribute("keySize", 256);
+        return "ru/ecdsa_ru";
+    }
+
+    @PostMapping("/ecdsa/ru/generate-keys")
+    public String generateEcdsaKeys(@ModelAttribute EcdsaRequest ecdsaRequest, Model model)
+    {
+        Map<String, String> keys = cryptoService.generateEcdsaKeys(ecdsaRequest.getKeySize());
+
+        model.addAttribute("publicKey", keys.get("public"));
+        model.addAttribute("privateKey", keys.get("private"));
+        model.addAttribute("keySize", ecdsaRequest.getKeySize());
+        model.addAttribute("text", ecdsaRequest.getText());
+
+        return "ru/ecdsa_ru";
+    }
+
+    @PostMapping("/ecdsa/ru/sign")
+    public String performEcdsaSign(@ModelAttribute EcdsaRequest ecdsaRequest, Model model)
+    {
+        String signature = cryptoService.ecdsaSign(ecdsaRequest.getText(), ecdsaRequest.getPrivateKey());
+
+        model.addAttribute("result", signature);
+        model.addAttribute("text", ecdsaRequest.getText());
+        model.addAttribute("publicKey", ecdsaRequest.getPublicKey());
+        model.addAttribute("privateKey", ecdsaRequest.getPrivateKey());
+        model.addAttribute("keySize", ecdsaRequest.getKeySize());
+
+        return "ru/ecdsa_ru";
+    }
+
+    @PostMapping("/ecdsa/ru/verify")
+    public String performEcdsaVerify(@ModelAttribute EcdsaRequest ecdsaRequest, Model model)
+    {
+        boolean isVerified = cryptoService.ecdsaVerify(ecdsaRequest.getText(), ecdsaRequest.getSignature(), ecdsaRequest.getPublicKey());
+
+        model.addAttribute("result", isVerified ? "Signature is valid" : "Signature is invalid");
+        model.addAttribute("text", ecdsaRequest.getText());
+        model.addAttribute("signature", ecdsaRequest.getSignature());
+        model.addAttribute("publicKey", ecdsaRequest.getPublicKey());
+        model.addAttribute("privateKey", ecdsaRequest.getPrivateKey());
+        model.addAttribute("keySize", ecdsaRequest.getKeySize());
+
+        return "ru/ecdsa_ru";
+    }
 }
