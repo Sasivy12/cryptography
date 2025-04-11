@@ -194,6 +194,10 @@ public class CryptoEnController
     {
         Map<String, String> keys = cryptoService.generateRsaKeys(rsaRequest.getKeySize());
 
+        // Логирование для отладки
+        System.out.println("Public Key: " + keys.get("public"));
+        System.out.println("Private Key: " + keys.get("private"));
+
         model.addAttribute("publicKey", keys.get("public"));
         model.addAttribute("privateKey", keys.get("private"));
         model.addAttribute("keySize", rsaRequest.getKeySize());
@@ -228,4 +232,103 @@ public class CryptoEnController
 
         return "en/rsa_en";
     }
+
+    @GetMapping("/ecdsa/en")
+    public String ecdsaPage(Model model)
+    {
+        model.addAttribute("publicKey", "");
+        model.addAttribute("privateKey", "");
+        model.addAttribute("keySize", 256);
+        return "en/ecdsa_en";
+    }
+
+    @PostMapping("/ecdsa/en/generate-keys")
+    public String generateEcdsaKeys(@ModelAttribute EcdsaRequest ecdsaRequest, Model model)
+    {
+        Map<String, String> keys = cryptoService.generateEcdsaKeys(ecdsaRequest.getKeySize());
+
+        model.addAttribute("publicKey", keys.get("public"));
+        model.addAttribute("privateKey", keys.get("private"));
+        model.addAttribute("keySize", ecdsaRequest.getKeySize());
+        model.addAttribute("text", ecdsaRequest.getText());
+
+        return "en/ecdsa_en";
+    }
+
+    @PostMapping("/ecdsa/en/sign")
+    public String performEcdsaSign(@ModelAttribute EcdsaRequest ecdsaRequest, Model model)
+    {
+        String signature = cryptoService.ecdsaSign(ecdsaRequest.getText(), ecdsaRequest.getPrivateKey());
+
+        model.addAttribute("result", signature);
+        model.addAttribute("text", ecdsaRequest.getText());
+        model.addAttribute("publicKey", ecdsaRequest.getPublicKey());
+        model.addAttribute("privateKey", ecdsaRequest.getPrivateKey());
+        model.addAttribute("keySize", ecdsaRequest.getKeySize());
+
+        return "en/ecdsa_en";
+    }
+
+    @PostMapping("/ecdsa/en/verify")
+    public String performEcdsaVerify(@ModelAttribute EcdsaRequest ecdsaRequest, Model model)
+    {
+        boolean isVerified = cryptoService.ecdsaVerify(ecdsaRequest.getText(), ecdsaRequest.getSignature(), ecdsaRequest.getPublicKey());
+
+        model.addAttribute("result", isVerified ? "Signature is valid" : "Signature is invalid");
+        model.addAttribute("text", ecdsaRequest.getText());
+        model.addAttribute("signature", ecdsaRequest.getSignature());
+        model.addAttribute("publicKey", ecdsaRequest.getPublicKey());
+        model.addAttribute("privateKey", ecdsaRequest.getPrivateKey());
+        model.addAttribute("keySize", ecdsaRequest.getKeySize());
+
+        return "en/ecdsa_en";
+    }
+
+    @GetMapping("/eddsa/en")
+    public String eddsaPage(Model model)
+    {
+        model.addAttribute("publicKey", "");
+        model.addAttribute("privateKey", "");
+        return "en/eddsa_en";
+    }
+
+    @PostMapping("/eddsa/en/generate-keys")
+    public String generateEdDsaKeys(Model model)
+    {
+        Map<String, String> keys = cryptoService.generateEd25519Keys();
+        model.addAttribute("publicKey", keys.get("public"));
+        model.addAttribute("privateKey", keys.get("private"));
+        return "en/eddsa_en";
+    }
+
+    @PostMapping("/eddsa/en/sign")
+    public String signEdDsaMessage(@RequestParam String text,
+                                   @RequestParam String privateKey,
+                                   @RequestParam String publicKey,
+                                   Model model)
+    {
+        String signature = cryptoService.ed25519Sign(text, privateKey);
+
+        model.addAttribute("text", text);
+        model.addAttribute("signature", signature);
+        model.addAttribute("privateKey", privateKey);
+        model.addAttribute("publicKey", publicKey);
+        return "en/eddsa_en";
+    }
+
+    @PostMapping("/eddsa/en/verify")
+    public String verifyEdDsaSignature(@RequestParam String text,
+                                       @RequestParam String signature,
+                                       @RequestParam String publicKey,
+                                       Model model)
+    {
+        boolean isValid = cryptoService.ed25519Verify(text, signature, publicKey);
+
+        model.addAttribute("text", text);
+        model.addAttribute("signature", signature);
+        model.addAttribute("publicKey", publicKey);
+        model.addAttribute("result", isValid ? "Signature is valid" : "Signature is invalid");
+        return "en/eddsa_en";
+    }
+
 }

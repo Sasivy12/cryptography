@@ -70,28 +70,32 @@
         }
     </style>
 </head>
-<body>
+    <body>
 
-<div class="language-switch">
-    <a th:href="@{/home/en}">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Flag_of_the_United_States_%28Pantone%29.svg/255px-Flag_of_the_United_States_%28Pantone%29.svg.png" alt="RU">
-        Английский
-    </a>
-</div>
+    <div class="language-switch">
+        <a th:href="@{/home/en}">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Flag_of_the_United_States_%28Pantone%29.svg/255px-Flag_of_the_United_States_%28Pantone%29.svg.png" alt="RU">
+            Английский
+        </a>
+    </div>
 
-<div class="container">
-    <h1>Криптография</h1>
-    <h2>Выберете алгоритм:</h2>
-    <ul class="cipher-list">
-        <li><a th:href="@{/caesar/ru}">Шифр Цезаря</a></li>
-        <li><a th:href="@{/vigenere/ru}">Шифр Виженера</a></li>
-        <li><a th:href="@{/playfair/ru}">Шифр Плейфера</a></li>
-        <li><a th:href="@{/route/ru}">Шифровальная решётка</a></li>
-        <li><a th:href="@{/columnartranspos/ru}">Перестановочный шифр</a></li>
-        <li><a th:href="@{/railfence/ru}">Шифр ограждения рельсов</a></li>
-        <li><a th:href="@{/rsa/ru}">RSA алгоритм</a></li>
-    </ul>
-</div>
+    <div class="container">
+        <h1>Криптография</h1>
+        <h1>Выберете алгоритм:</h1>
+        <h1>Симметриченые алгоритмы</h1>
+        <ul class="cipher-list">
+            <li><a th:href="@{/caesar/ru}">Шифр Цезаря</a></li>
+            <li><a th:href="@{/vigenere/ru}">Шифр Виженера</a></li>
+            <li><a th:href="@{/playfair/ru}">Шифр Плейфера</a></li>
+            <li><a th:href="@{/route/ru}">Шифровальная решётка</a></li>
+            <li><a th:href="@{/columnartranspos/ru}">Перестановочный шифр</a></li>
+            <li><a th:href="@{/railfence/ru}">Шифр ограждения рельсов</a></li>
+            <h1>Асимметриченые алгоритмы</h1>
+            <li><a th:href="@{/rsa/ru}">RSA алгоритм</a></li>
+            <li><a th:href="@{/ecdsa/ru}">ECDSA алгоритм</a></li>
+            <li><a th:href="@{/eddsa/ru}">EdDSA алгоритм</a></li>
+        </ul>
+    </div>
 
-</body>
+    </body>
 </html>

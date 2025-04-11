@@ -70,28 +70,32 @@
         }
     </style>
 </head>
-<body>
+    <body>
 
-<div class="language-switch">
-    <a th:href="@{/home/ru}">
-        <img src="https://upload.wikimedia.org/wikipedia/en/f/f3/Flag_of_Russia.svg" alt="RU">
-        Русский
-    </a>
-</div>
+    <div class="language-switch">
+        <a th:href="@{/home/ru}">
+            <img src="https://upload.wikimedia.org/wikipedia/en/f/f3/Flag_of_Russia.svg" alt="RU">
+            Русский
+        </a>
+    </div>
 
-<div class="container">
-    <h1>Cryptography App</h1>
-    <h2>Select an Algorithm:</h2>
-    <ul class="cipher-list">
-        <li><a th:href="@{/caesar/en}">Caesar Cipher</a></li>
-        <li><a th:href="@{/vigenere/en}">Vigenère Cipher</a></li>
-        <li><a th:href="@{/playfair/en}">Playfair Cipher</a></li>
-        <li><a th:href="@{/route/en}">Route Cipher</a></li>
-        <li><a th:href="@{/columnartranspos/en}">Columnar Transposition</a></li>
-        <li><a th:href="@{/railfence/en}">Rail Fence Cipher</a></li>
-        <li><a th:href="@{/rsa/en}">RSA Algorithm</a></li>
-    </ul>
-</div>
+    <div class="container">
+        <h1 style="font-size: 30px">Cryptography App</h1>
+        <h1>Select an Algorithm:</h1>
+        <h1>Symmetric algorithms:</h1>
+        <ul class="cipher-list">
+            <li><a th:href="@{/caesar/en}">Caesar Cipher</a></li>
+            <li><a th:href="@{/vigenere/en}">Vigenère Cipher</a></li>
+            <li><a th:href="@{/playfair/en}">Playfair Cipher</a></li>
+            <li><a th:href="@{/route/en}">Route Cipher</a></li>
+            <li><a th:href="@{/columnartranspos/en}">Columnar Transposition</a></li>
+            <li><a th:href="@{/railfence/en}">Rail Fence Cipher</a></li>
+            <h1>Asymmetric algorithms:</h1>
+            <li><a th:href="@{/rsa/en}">RSA Algorithm</a></li>
+            <li><a th:href="@{/ecdsa/en}">ECDSA Algorithm</a></li>
+            <li><a th:href="@{/eddsa/en}">EdDSA Algorithm</a></li>
+        </ul>
+    </div>
 
-</body>
+    </body>
 </html>
