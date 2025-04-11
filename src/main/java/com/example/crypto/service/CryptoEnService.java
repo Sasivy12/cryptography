@@ -397,4 +397,69 @@ public class CryptoEnService
         }
     }
 
+    public Map<String, String> generateEd25519Keys()
+    {
+        try
+        {
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("Ed25519");
+            KeyPair keyPair = keyGen.generateKeyPair();
+
+            String publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
+            String privateKey = Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded());
+
+            Map<String, String> keys = new HashMap<>();
+            keys.put("public", publicKey);
+            keys.put("private", privateKey);
+            return keys;
+        }
+        catch (NoSuchAlgorithmException e)
+        {
+            throw new RuntimeException("Error generating Ed25519 keys", e);
+        }
+    }
+
+    public String ed25519Sign(String message, String base64PrivateKey)
+    {
+        try
+        {
+            byte[] privateKeyBytes = Base64.getDecoder().decode(base64PrivateKey);
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("Ed25519");
+            PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
+
+            Signature signature = Signature.getInstance("Ed25519");
+            signature.initSign(privateKey);
+            signature.update(message.getBytes());
+
+            byte[] sigBytes = signature.sign();
+            return Base64.getEncoder().encodeToString(sigBytes);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("Error signing with Ed25519", e);
+        }
+    }
+
+    public boolean ed25519Verify(String message, String base64Signature, String base64PublicKey)
+    {
+        try
+        {
+            byte[] publicKeyBytes = Base64.getDecoder().decode(base64PublicKey);
+            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("Ed25519");
+            PublicKey publicKey = keyFactory.generatePublic(keySpec);
+
+            Signature signature = Signature.getInstance("Ed25519");
+            signature.initVerify(publicKey);
+            signature.update(message.getBytes());
+
+            byte[] sigBytes = Base64.getDecoder().decode(base64Signature);
+            return signature.verify(sigBytes);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("Error verifying Ed25519 signature", e);
+        }
+    }
+
 }

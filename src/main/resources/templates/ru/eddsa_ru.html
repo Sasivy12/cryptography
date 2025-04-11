@@ -64,41 +64,42 @@
     </style>
 </head>
 <body>
-
 <div class="container">
-    <h1>ECDSA Операции</h1>
+    <h1>EdDSA Операции</h1>
 
-    <form th:action="@{/ecdsa/ru/generate-keys}" method="post">
-        <button type="submit">Сгенерировать ECDSA ключи</button>
+    <form th:action="@{/eddsa/ru/generate-keys}" method="post">
+        <button type="submit">Сгенерировать EdDSA ключи</button>
     </form>
 
-    <form th:action="@{/ecdsa/ru/sign}" method="post">
+    <form th:action="@{/eddsa/ru/sign}" method="post">
         <label for="message">Сообщение для подписи:</label>
-        <textarea id="message" name="text" th:text="${text}" required></textarea>
+        <textarea id="message" name="text" required
+                  th:text="${text}"></textarea>
 
         <label for="privateKey">Закрытый ключ:</label>
-        <textarea id="privateKey" name="privateKey" th:text="${privateKey}" required></textarea>
+        <textarea id="privateKey" name="privateKey" required
+                  th:text="${privateKey}"></textarea>
 
         <input type="hidden" name="publicKey" th:value="${publicKey}" />
-
-        <input type="hidden" name="keySize" th:value="${keySize}" />
 
         <button type="submit">Подписать сообщение</button>
     </form>
 
-    <form th:action="@{/ecdsa/ru/verify}" method="post">
+    <form th:action="@{/eddsa/ru/verify}" method="post">
         <label for="verifyMessage">Сообщение для проверки:</label>
-        <textarea id="verifyMessage" name="text" th:text="${textToVerify}" required></textarea>
+        <textarea id="verifyMessage" name="text" required
+                  th:text="${text}"></textarea>
 
         <label for="signature">Подпись:</label>
-        <textarea id="signature" name="signature" th:text="${signature}" required></textarea>
+        <textarea id="signature" name="signature" required
+                  th:text="${signature}"></textarea>
 
         <label for="publicKey">Открытый ключ:</label>
-        <textarea id="publicKey" name="publicKey" th:text="${publicKey}" required></textarea>
+        <textarea id="publicKey" name="publicKey" required
+                  th:text="${publicKey}"></textarea>
 
         <button type="submit">Проверить подпись</button>
     </form>
-
 
     <div class="result">
         <p th:text="${result}"></p>
@@ -107,6 +108,6 @@
     <a th:href="@{/home/ru}">Вернуться на домашнюю страницу</a>
 
 </div>
-
 </body>
+
 </html>

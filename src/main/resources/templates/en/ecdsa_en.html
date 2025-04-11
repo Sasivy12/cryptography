@@ -79,10 +79,8 @@
             <label for="privateKey">Private Key:</label>
             <textarea id="privateKey" name="privateKey" th:text="${privateKey}" required></textarea>
 
-            <!-- Скрытое поле для publicKey -->
             <input type="hidden" name="publicKey" th:value="${publicKey}" />
 
-            <!-- Скрытое поле для keySize (чтобы он тоже не терялся) -->
             <input type="hidden" name="keySize" th:value="${keySize}" />
 
             <button type="submit">Sign Message</button>
@@ -105,6 +103,8 @@
         <div class="result">
             <p th:text="${result}"></p>
         </div>
+
+        <a th:href="@{/home/en}">Back to Home</a>
 
     </div>
 

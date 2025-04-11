@@ -280,4 +280,51 @@ public class CryptoRuController
 
         return "ru/ecdsa_ru";
     }
+
+    @GetMapping("/eddsa/ru")
+    public String eddsaPage(Model model)
+    {
+        model.addAttribute("publicKey", "");
+        model.addAttribute("privateKey", "");
+        return "ru/eddsa_ru";
+    }
+
+    @PostMapping("/eddsa/ru/generate-keys")
+    public String generateEdDsaKeys(Model model)
+    {
+        Map<String, String> keys = cryptoService.generateEd25519Keys();
+        model.addAttribute("publicKey", keys.get("public"));
+        model.addAttribute("privateKey", keys.get("private"));
+        return "ru/eddsa_ru";
+    }
+
+    @PostMapping("/eddsa/ru/sign")
+    public String signEdDsaMessage(@RequestParam String text,
+                                   @RequestParam String privateKey,
+                                   @RequestParam String publicKey,
+                                   Model model)
+    {
+        String signature = cryptoService.ed25519Sign(text, privateKey);
+
+        model.addAttribute("text", text);
+        model.addAttribute("signature", signature);
+        model.addAttribute("privateKey", privateKey);
+        model.addAttribute("publicKey", publicKey);
+        return "ru/eddsa_ru";
+    }
+
+    @PostMapping("/eddsa/ru/verify")
+    public String verifyEdDsaSignature(@RequestParam String text,
+                                       @RequestParam String signature,
+                                       @RequestParam String publicKey,
+                                       Model model)
+    {
+        boolean isValid = cryptoService.ed25519Verify(text, signature, publicKey);
+
+        model.addAttribute("text", text);
+        model.addAttribute("signature", signature);
+        model.addAttribute("publicKey", publicKey);
+        model.addAttribute("result", isValid ? "Signature is valid" : "Signature is invalid");
+        return "ru/eddsa_ru";
+    }
 }

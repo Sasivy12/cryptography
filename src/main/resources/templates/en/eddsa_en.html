@@ -63,50 +63,51 @@
         }
     </style>
 </head>
-<body>
+    <body>
+    <div class="container">
+        <h1>EdDSA Operations</h1>
 
-<div class="container">
-    <h1>ECDSA Операции</h1>
+        <form th:action="@{/eddsa/en/generate-keys}" method="post">
+            <button type="submit">Generate EdDSA Keys</button>
+        </form>
 
-    <form th:action="@{/ecdsa/ru/generate-keys}" method="post">
-        <button type="submit">Сгенерировать ECDSA ключи</button>
-    </form>
+        <form th:action="@{/eddsa/en/sign}" method="post">
+            <label for="message">Message to Sign:</label>
+            <textarea id="message" name="text" required
+                      th:text="${text}"></textarea>
 
-    <form th:action="@{/ecdsa/ru/sign}" method="post">
-        <label for="message">Сообщение для подписи:</label>
-        <textarea id="message" name="text" th:text="${text}" required></textarea>
+            <label for="privateKey">Private Key:</label>
+            <textarea id="privateKey" name="privateKey" required
+                      th:text="${privateKey}"></textarea>
 
-        <label for="privateKey">Закрытый ключ:</label>
-        <textarea id="privateKey" name="privateKey" th:text="${privateKey}" required></textarea>
+            <input type="hidden" name="publicKey" th:value="${publicKey}" />
 
-        <input type="hidden" name="publicKey" th:value="${publicKey}" />
+            <button type="submit">Sign Message</button>
+        </form>
 
-        <input type="hidden" name="keySize" th:value="${keySize}" />
+        <form th:action="@{/eddsa/en/verify}" method="post">
+            <label for="verifyMessage">Message to Verify:</label>
+            <textarea id="verifyMessage" name="text" required
+                      th:text="${text}"></textarea>
 
-        <button type="submit">Подписать сообщение</button>
-    </form>
+            <label for="signature">Signature:</label>
+            <textarea id="signature" name="signature" required
+                      th:text="${signature}"></textarea>
 
-    <form th:action="@{/ecdsa/ru/verify}" method="post">
-        <label for="verifyMessage">Сообщение для проверки:</label>
-        <textarea id="verifyMessage" name="text" th:text="${textToVerify}" required></textarea>
+            <label for="publicKey">Public Key:</label>
+            <textarea id="publicKey" name="publicKey" required
+                      th:text="${publicKey}"></textarea>
 
-        <label for="signature">Подпись:</label>
-        <textarea id="signature" name="signature" th:text="${signature}" required></textarea>
+            <button type="submit">Verify Signature</button>
+        </form>
 
-        <label for="publicKey">Открытый ключ:</label>
-        <textarea id="publicKey" name="publicKey" th:text="${publicKey}" required></textarea>
+        <div class="result">
+            <p th:text="${result}"></p>
+        </div>
 
-        <button type="submit">Проверить подпись</button>
-    </form>
+        <a th:href="@{/home/en}">Back to Home</a>
 
-
-    <div class="result">
-        <p th:text="${result}"></p>
     </div>
+    </body>
 
-    <a th:href="@{/home/ru}">Вернуться на домашнюю страницу</a>
-
-</div>
-
-</body>
 </html>
